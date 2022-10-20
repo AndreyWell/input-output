@@ -6,6 +6,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         File file = new File("basket.txt");
+        File data = new File("data.bin");
 
         Basket basket = new Basket(
                 Arrays.asList("Хлеб", "Яблоки", "Молоко", "Чай"),
@@ -28,6 +29,8 @@ public class Main {
             System.out.println("2 Вывести корзину на экран");
             System.out.println("3 Сохранить корзину в текстовый файл");
             System.out.println("4 Получить объект корзины из текстового файла");
+            System.out.println("5 Сохранить файл в бинарном формате");
+            System.out.println("6 Загрузить корзину из бинарного файла");
 
             String input = scanner.nextLine();
             if (input.equals("end")) {
@@ -64,6 +67,14 @@ public class Main {
             if (input.equals("4")) {
                 Basket basket1 = Basket.loadFromTxtFile(file);
                 System.out.println(basket1);
+            }
+
+            if (input.equals("5")) {
+                basket.saveBin(data);
+            }
+
+            if (input.equals("6")) {
+                Basket.loadFromBinFile(data);
             }
         }
     }

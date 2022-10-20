@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Basket {
+public class Basket implements Serializable {
     private List<String> products;
     private List<Integer> prices;
     private int[] basketSum;
@@ -36,11 +36,12 @@ public class Basket {
         return basketSum;
     }
 
-
+    // Добавление в корзину amount штук продукта номер productNum
     public void addTo(int productNum, int amount) {
         basketSum[productNum] += amount;
     }
 
+    // Вывод на экран покупательской корзины
     public List<String> printCart() {
         int count = 0;
         List<String> printCart = new ArrayList<>();
@@ -65,6 +66,7 @@ public class Basket {
         return printCart;
     }
 
+    // Сохранение корзины в текстовый файл
     public void saveTxt(File textFile) throws IOException {
         try (PrintWriter out = new PrintWriter(textFile)) {
             if (printCart().size() == 1) {
@@ -77,6 +79,7 @@ public class Basket {
         }
     }
 
+    // Восстановление объекта корзины
     public static Basket loadFromTxtFile(File textFile) throws Exception {
         Basket rebuild = new Basket();
         if (textFile.canRead()) {
@@ -110,6 +113,7 @@ public class Basket {
         return rebuild;
     }
 
+    // Восстановление ранее сформированной корзины из текущего файла
     public void rebuildBasketFromFile(File basket) throws Exception {
         if (basket.canRead()) {
             try (BufferedReader reader = new BufferedReader(new FileReader(basket))) {
@@ -136,6 +140,31 @@ public class Basket {
                     }
                 }
             }
+        }
+    }
+
+    // Запись в бинарном формате через сериализацию
+    public void saveBin(File file) throws Exception {
+        File txtBasket = new File("basket.txt");
+        if (txtBasket.canRead()) {
+            try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(file))) {
+                out.writeObject(loadFromTxtFile(txtBasket));
+            }
+        } else {
+            System.out.println("Корзина пустая");
+        }
+    }
+
+    // Чтение корзины из бинарного файла
+    public static void loadFromBinFile(File file) throws Exception {
+        Basket basket1;
+        if (file.canRead()) {
+            try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(file))) {
+                basket1 = (Basket) in.readObject();
+                System.out.println(basket1);
+            }
+        } else {
+            System.out.println("Корзина пустая");
         }
     }
 
